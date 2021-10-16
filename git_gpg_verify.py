@@ -1,7 +1,10 @@
 import json
+import os
 
 import requests
 from loguru import logger
+import gnupg
+import git
 
 
 GITHUB_USERNAME = "ttw225"
@@ -9,12 +12,13 @@ GITHUB_GPG_URI = f"https://api.github.com/users/{GITHUB_USERNAME}/gpg_keys"
 GITHUB_HEADERS = {"Accept": "application/vnd.github.v3+json"}
 
 
-def get_github_gpgkeys() -> list:
+def get_github_gpgs() -> list:
     """Get GitHub GPG Key IDs
 
     Returns:
         list: GPG Key IDs
     """
+    logger.info(f"[Git Platform] Getting GPG Keys from user {GITHUB_USERNAME}")
     try:
         response: json = requests.get(GITHUB_GPG_URI, headers=GITHUB_HEADERS).json()
     except Exception as err:
@@ -40,6 +44,26 @@ def parse_github_response(response: json) -> list:
     return key_ids
 
 
+def get_local_gpgs():
+    pass
+
+
+def get_project_sign() -> str:
+    logger.info("[Git Config] Getting user signingkey settings")
+    try:
+        return git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey")
+    except Exception as err:
+        logger.warning(f"[Git Conofig] user signingkey error: {err}")
+        return None
+
+
 if __name__ == "__main__":
-    gpgkey_ids: list = get_github_gpgkeys()
-    logger.info(f"[GitHub Valid IDs] {gpgkey_ids}")
+    try:
+        project_key_id: str = get_project_sign()
+        logger.debug(f"[Project Key ID] {project_key_id}")
+        if not project_key_id:
+            raise Exception("No Local GPG Key Setting")
+        platform_key_ids: list = get_github_gpgs()
+        logger.debug(f"[Platform Valid Key IDs] {platform_key_ids}")
+    except Exception as err:
+        logger.error(err)
