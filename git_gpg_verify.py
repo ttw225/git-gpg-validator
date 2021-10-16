@@ -73,6 +73,23 @@ def get_project_sign() -> str:
         return None
 
 
+def compare_pubkey(local_key: str, platform_keys: List[Tuple[str, str]]) -> bool:
+    """Compare Key with Key ID and Public Key
+
+    Args:
+        local_key (str): local GPG Key ID
+        platform_keys (List[Tuple[str, str]]): Platform GPG Key IDs
+
+    Returns:
+        bool: Have same key or not
+    """
+    for keyid, pubkey in platform_keys:
+        if local_key == get_local_gpg_pub(keyid):
+            logger.debug(f"[Key Valid] {keyid}")
+            return True
+    return False
+
+
 if __name__ == "__main__":
     try:
         project_key_id: str = get_project_sign()
@@ -85,5 +102,9 @@ if __name__ == "__main__":
         platform_keys: List[Tuple[str, str]] = get_github_gpgs()
         if not platform_keys:
             raise Exception("No Platform GPG Key Available")
+        if compare_pubkey(local_gpg_pub, platform_keys):
+            logger.success("[GPG Key] Verified Successfully")
+        else:
+            logger.error("[GPG Key] Verification Failed")
     except Exception as err:
         logger.error(err)
