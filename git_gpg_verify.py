@@ -1,5 +1,6 @@
 import json
 import os
+from typing import List, Tuple
 
 import requests
 from loguru import logger
@@ -12,11 +13,11 @@ GITHUB_GPG_URI = f"https://api.github.com/users/{GITHUB_USERNAME}/gpg_keys"
 GITHUB_HEADERS = {"Accept": "application/vnd.github.v3+json"}
 
 
-def get_github_gpgs() -> list:
+def get_github_gpgs() -> List[Tuple[str, str]]:
     """Get GitHub GPG Key IDs
 
     Returns:
-        list: GPG Key IDs
+        List[Tuple[str, str]]: Pair of GPG ID and Public Key
     """
     logger.info(f"[Git Platform] Getting GPG Keys from user {GITHUB_USERNAME}")
     try:
@@ -27,28 +28,43 @@ def get_github_gpgs() -> list:
     return key_ids
 
 
-def parse_github_response(response: json) -> list:
+def parse_github_response(response: json) -> List[Tuple[str, str]]:
     """Parse GitHub API Response
 
     Args:
         response (json): response
 
     Returns:
-        list: GPG IDs
+        List[Tuple[str, str]]: Pair of GPG ID and Public Key
     """
-    key_ids: list = []
+    gpg_keys: List[Tuple[str, str]] = []
     for keys in response:
         if keys["can_sign"] and keys["can_certify"]:
             logger.info(f"[GitHub GPG] ID: {keys['key_id']}")
-            key_ids.append(keys["key_id"])
-    return key_ids
+            gpg_keys.append((keys["key_id"], keys["raw_key"]))
+    return gpg_keys
 
 
-def get_local_gpgs():
-    pass
+def get_local_gpg_pub(gpg_id: str) -> str:
+    """Get Local GPG Public Key
+
+    Args:
+        gpg_id (str): GPG Key ID
+
+    Returns:
+        str: Public Key
+    """
+    gpg = gnupg.GPG()
+    gpg_key = gpg.export_keys(gpg_id)
+    return gpg_key
 
 
 def get_project_sign() -> str:
+    """Get Local Git user.signingkey Setting
+
+    Returns:
+        str: user.signingkey
+    """
     logger.info("[Git Config] Getting user signingkey settings")
     try:
         return git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey")
@@ -63,7 +79,11 @@ if __name__ == "__main__":
         logger.debug(f"[Project Key ID] {project_key_id}")
         if not project_key_id:
             raise Exception("No Local GPG Key Setting")
-        platform_key_ids: list = get_github_gpgs()
-        logger.debug(f"[Platform Valid Key IDs] {platform_key_ids}")
+        local_gpg_pub: str = get_local_gpg_pub(project_key_id)
+        if not local_gpg_pub:
+            raise Exception("Local GPG Key Not Found")
+        platform_keys: List[Tuple[str, str]] = get_github_gpgs()
+        if not platform_keys:
+            raise Exception("No Platform GPG Key Available")
     except Exception as err:
         logger.error(err)
