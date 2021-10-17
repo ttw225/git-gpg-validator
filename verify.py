@@ -45,20 +45,6 @@ def parse_github_response(response: json) -> List[Tuple[str, str]]:
     return gpg_keys
 
 
-def get_local_gpg_pub(gpg_id: str) -> str:
-    """Get Local GPG Public Key
-
-    Args:
-        gpg_id (str): GPG Key ID
-
-    Returns:
-        str: Public Key
-    """
-    gpg = gnupg.GPG()
-    gpg_key = gpg.export_keys(gpg_id)
-    return gpg_key
-
-
 def get_project_sign() -> str:
     """Get Local Git user.signingkey Setting
 
@@ -73,36 +59,39 @@ def get_project_sign() -> str:
         return None
 
 
-def compare_pubkey(local_key: str, platform_keys: List[Tuple[str, str]]) -> bool:
-    """Compare Key with Key ID and Public Key
+def compare_key(local_key: str, platform_keys: List[Tuple[str, str]]) -> bool:
+    """Compare Key with fingerprint
 
     Args:
         local_key (str): local GPG Key ID
         platform_keys (List[Tuple[str, str]]): Platform GPG Key IDs
 
     Returns:
-        bool: Have same key or not
+        bool: Local key valid or not
     """
+    gpg = gnupg.GPG()
+    local_fingerprint: str = gpg.import_keys(gpg.export_keys(project_key_id)).fingerprints[0]
+    logger.debug(f"[Local Fingerprint] {local_fingerprint}")
     for keyid, pubkey in platform_keys:
-        if local_key == get_local_gpg_pub(keyid):
-            logger.debug(f"[Key Valid] {keyid}")
+        if local_fingerprint == gpg.import_keys(pubkey).fingerprints[0]:
+            logger.debug(f"[Key Valid] ID: {keyid}")
             return True
     return False
 
 
 if __name__ == "__main__":
     try:
+        # Project GPG Key in Git Config (Local > Global)
         project_key_id: str = get_project_sign()
         logger.debug(f"[Project Key ID] {project_key_id}")
         if not project_key_id:
             raise Exception("No Local GPG Key Setting")
-        local_gpg_pub: str = get_local_gpg_pub(project_key_id)
-        if not local_gpg_pub:
-            raise Exception("Local GPG Key Not Found")
+        # Platform GPG Key(s)
         platform_keys: List[Tuple[str, str]] = get_github_gpgs()
         if not platform_keys:
             raise Exception("No Platform GPG Key Available")
-        if compare_pubkey(local_gpg_pub, platform_keys):
+        # Fingerprint Verification
+        if compare_key(project_key_id, platform_keys):
             logger.success("[GPG Key] Verified Successfully")
         else:
             logger.error("[GPG Key] Verification Failed")

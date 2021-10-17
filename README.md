@@ -39,3 +39,30 @@ Show git log with signatures
 ```sh
 git log --show-signature
 ```
+
+## Validator
+
+## Getting Started
+
+### Prerequisites
+
+- python 3.7
+- pipenv 2018.11.26
+
+### Running
+
+1. Installing Packages
+```sh
+pipenv install
+```
+
+2. Validate
+```sh
+pipenv run python3 verify.py
+```
+
+### Simple Fingerprint Compare
+
+Applicable to the situation where the same key is used for encryption and decryption.
+
+Compare GPG Key fingerprint between git config setting and platform settings.
