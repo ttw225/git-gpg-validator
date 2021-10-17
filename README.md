@@ -65,4 +65,6 @@ pipenv run python3 verify.py
 
 Applicable to the situation where the same key is used for encryption and decryption.
 
-Compare GPG Key fingerprint between git config setting and platform settings.
+This script will compare GPG Key fingerprint between git config setting and platform settings.
+
+> The fingerprint is derived from the public key and creation timestamp -- both are contained in the public keys listed on the site. [reference](https://stackoverflow.com/a/46916593)
