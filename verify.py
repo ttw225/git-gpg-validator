@@ -14,7 +14,7 @@ GITHUB_HEADERS = {"Accept": "application/vnd.github.v3+json"}
 
 
 def get_github_gpgs() -> List[Tuple[str, str]]:
-    """Get GitHub GPG Key IDs
+    """Get GitHub GPG Key Pairs (ID, Pubkey)
 
     Returns:
         List[Tuple[str, str]]: Pair of GPG ID and Public Key
@@ -70,7 +70,7 @@ def compare_key(local_key: str, platform_keys: List[Tuple[str, str]]) -> bool:
         bool: Local key valid or not
     """
     gpg = gnupg.GPG()
-    local_fingerprint: str = gpg.import_keys(gpg.export_keys(project_key_id)).fingerprints[0]
+    local_fingerprint: str = gpg.import_keys(gpg.export_keys(local_key)).fingerprints[0]
     logger.debug(f"[Local Fingerprint] {local_fingerprint}")
     for keyid, pubkey in platform_keys:
         if local_fingerprint == gpg.import_keys(pubkey).fingerprints[0]:
@@ -87,11 +87,11 @@ if __name__ == "__main__":
         if not project_key_id:
             raise Exception("No Local GPG Key Setting")
         # Platform GPG Key(s)
-        platform_keys: List[Tuple[str, str]] = get_github_gpgs()
-        if not platform_keys:
+        platform_key_pairs: List[Tuple[str, str]] = get_github_gpgs()
+        if not platform_key_pairs:
             raise Exception("No Platform GPG Key Available")
         # Fingerprint Verification
-        if compare_key(project_key_id, platform_keys):
+        if compare_key(project_key_id, platform_key_pairs):
             logger.success("[GPG Key] Verified Successfully")
         else:
             logger.error("[GPG Key] Verification Failed")
