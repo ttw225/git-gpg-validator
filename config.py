@@ -1,4 +1,9 @@
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Sign and Verify
-SIGN_KEYID = "68A8DC40153D6B6F"
-# SIGN_KEYID = "2D292E2D32433873"
-VERIFY_GPGHOME = ".gpg_folder"
+SIGN_KEYID = os.environ.get("SIGN_KEYID", "")
+VERIFY_GPGHOME = os.environ.get("VERIFY_GPGHOME", ".gpg_folder")
