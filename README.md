@@ -9,7 +9,7 @@ Authentication of the commit can protect projects and also help version tracing.
 
 ## Why this project?
 
-I usually have two different git accounts(emails) working on GitHub and GitLab, both of them have different GPG keys.
+People usually have different git accounts(emails) working on GitHub, GitLab, etc., both of them have different GPG keys.
 
 To sign the commit correctly, it is better to verify the GPG key between the local settings and the git platform settings before uploading.
 
@@ -61,10 +61,21 @@ pipenv install
 pipenv run python3 verify.py
 ```
 
-### Simple Fingerprint Compare
+### [Simple Fingerprint Compare](./verify.py)
 
 Applicable to the situation where the same key is used for encryption and decryption.
 
 This script will compare GPG Key fingerprint between git config setting and platform settings.
 
 > The fingerprint is derived from the public key and creation timestamp -- both are contained in the public keys listed on the site. [reference](https://stackoverflow.com/a/46916593)
+
+### [Hard Verify](./sign_verify.py)
+
+Some developers separate the keys for signing and verification. At this time, the actual signing and verification can confirm whether the key is set correctly.
+
+Verification flow:
+
+1. Sign text: use project default key or specific key to sign text
+2. Import platform GPG keys
+    The `verify_signature` function will import platform's key into temporary GPG folder (default is `.gpg_folder`).
+3. Use temporary GPG object to verify the signature from step 1.
