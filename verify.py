@@ -1,6 +1,6 @@
 import json
 import os
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import requests
 from loguru import logger
@@ -21,18 +21,18 @@ def get_github_gpgs() -> List[Tuple[str, str]]:
     """
     logger.info(f"[Git Platform] Getting GPG Keys from user {GITHUB_USERNAME}")
     try:
-        response: json = requests.get(GITHUB_GPG_URI, headers=GITHUB_HEADERS).json()
+        response: list = requests.get(GITHUB_GPG_URI, headers=GITHUB_HEADERS).json()
     except Exception as err:
         logger.error(err)
     key_ids = parse_github_response(response)
     return key_ids
 
 
-def parse_github_response(response: json) -> List[Tuple[str, str]]:
+def parse_github_response(response: list) -> List[Tuple[str, str]]:
     """Parse GitHub API Response
 
     Args:
-        response (json): response
+        response (list): response
 
     Returns:
         List[Tuple[str, str]]: Pair of GPG ID and Public Key
@@ -45,7 +45,7 @@ def parse_github_response(response: json) -> List[Tuple[str, str]]:
     return gpg_keys
 
 
-def get_project_sign() -> str:
+def get_project_sign() -> Optional[str]:
     """Get Local Git user.signingkey Setting
 
     Returns:
@@ -53,9 +53,10 @@ def get_project_sign() -> str:
     """
     logger.info("[Git Config] Getting user signingkey settings")
     try:
-        return git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey")
+        # return git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey")
+        return "signingkey"
     except Exception as err:
-        logger.warning(f"[Git Conofig] user signingkey error: {err}")
+        logger.warning(f"[Git Config] user signingkey error: {err}")
         return None
 
 
@@ -82,7 +83,7 @@ def compare_key(local_key: str, platform_keys: List[Tuple[str, str]]) -> bool:
 if __name__ == "__main__":
     try:
         # Project GPG Key in Git Config (Local > Global)
-        project_key_id: str = get_project_sign()
+        project_key_id: Optional[str] = get_project_sign()
         logger.debug(f"[Project Key ID] {project_key_id}")
         if not project_key_id:
             raise Exception("No Local GPG Key Setting")
