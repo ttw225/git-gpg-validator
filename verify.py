@@ -1,4 +1,3 @@
-import json
 import os
 from typing import List, Tuple, Optional
 
@@ -7,10 +6,7 @@ from loguru import logger
 import gnupg
 import git
 
-
-GITHUB_USERNAME = "ttw225"
-GITHUB_GPG_URI = f"https://api.github.com/users/{GITHUB_USERNAME}/gpg_keys"
-GITHUB_HEADERS = {"Accept": "application/vnd.github.v3+json"}
+from config import GITHUB_GPG_URI, GITHUB_HEADERS
 
 
 def get_github_gpgs() -> List[Tuple[str, str]]:
@@ -19,7 +15,6 @@ def get_github_gpgs() -> List[Tuple[str, str]]:
     Returns:
         List[Tuple[str, str]]: Pair of GPG ID and Public Key
     """
-    logger.info(f"[Git Platform] Getting GPG Keys from user {GITHUB_USERNAME}")
     try:
         response: list = requests.get(GITHUB_GPG_URI, headers=GITHUB_HEADERS).json()
     except Exception as err:
@@ -53,8 +48,7 @@ def get_project_sign() -> Optional[str]:
     """
     logger.info("[Git Config] Getting user signingkey settings")
     try:
-        # return git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey")
-        return "signingkey"
+        return git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey")
     except Exception as err:
         logger.warning(f"[Git Config] user signingkey error: {err}")
         return None
