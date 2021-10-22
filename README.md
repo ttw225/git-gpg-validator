@@ -82,20 +82,24 @@ Example:
 # Enter virtual environment
 pipenv shell
 
-# Use project default key, and compare fingerprint only
+# Simple Verify
+## Use project default key, and compare fingerprint only
 python3 app.py
 
-# Use specific key, and compare fingerprint only
+## Use specific key, and compare fingerprint only
 python3 app.py -k "KEY_ID"
 
-# Use project default key, and do a sign-verify check
+# Hard Verify
+mkdir .gpg_folder
+
+## Use project default key, and do a sign-verify check
 python3 app.py -m hard
 
-# Use specific key, and a sign-verify check
+## Use specific key, and a sign-verify check
 python3 app.py -m hard -k "KEY_ID"
 ```
 
-### [Simple Fingerprint Compare](./verify.py)
+### [Simple Fingerprint Compare](./compare_fingerprint.py)
 
 Applicable to the situation where the same key is used for encryption and decryption.
 
