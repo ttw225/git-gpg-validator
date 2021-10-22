@@ -7,6 +7,7 @@ load_dotenv()
 # Sign and Verify
 SIGN_KEYID = os.environ.get("SIGN_KEYID", "")
 VERIFY_GPGHOME = os.environ.get("VERIFY_GPGHOME", ".gpg_folder")
+PAYLOAD = "Try a little harder to be a little better"
 
 # Sign
 GITHUB_USERNAME = os.environ.get("GITHUB_USERNAME", "")
