@@ -4,6 +4,11 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+mypy = "==0.910"
+pylint = "==2.11.1"
+black = "==21.9b0"
+flake8 = "==4.0.1"
+isort = "==5.9.3"
 
 [packages]
 requests = "==2.26.0"
