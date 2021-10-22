@@ -5,7 +5,8 @@ from loguru import logger
 import gnupg
 
 from config import VERIFY_GPGHOME, PAYLOAD
-from verify import get_project_sign, get_github_gpgs, compare_key
+from utils import get_github_gpgs, get_project_sign
+from compare_fingerprint import compare_key
 from sign_verify import sign_text, verify_signature
 
 

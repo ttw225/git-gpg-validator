@@ -3,7 +3,7 @@ from typing import List, Tuple
 from loguru import logger
 import gnupg
 
-from verify import get_github_gpgs
+from utils import get_github_gpgs
 from config import SIGN_KEYID, VERIFY_GPGHOME, PAYLOAD
 
 
