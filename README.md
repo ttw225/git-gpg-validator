@@ -58,12 +58,12 @@ pipenv install
 
 2. Validate
 ```sh
-pipenv run python3 app.py
+pipenv run python3 validator/app.py
 ```
 
 Help
 ```sh
-pipenv run python3 app.py --help
+pipenv run python3 validator/app.py --help
 ```
 ```sh
 usage: app.py [-h] [-m {simple,hard}] [-k KEY]
@@ -84,19 +84,19 @@ pipenv shell
 
 # Simple Verify
 ## Use project default key, and compare fingerprint only
-python3 app.py
+python3 validator/app.py
 
 ## Use specific key, and compare fingerprint only
-python3 app.py -k "KEY_ID"
+python3 validator/app.py -k "KEY_ID"
 
 # Hard Verify
 mkdir .gpg_folder
 
 ## Use project default key, and do a sign-verify check
-python3 app.py -m hard
+python3 validator/app.py -m hard
 
 ## Use specific key, and a sign-verify check
-python3 app.py -m hard -k "KEY_ID"
+python3 validator/app.py -m hard -k "KEY_ID"
 ```
 
 ### [Simple Fingerprint Compare](./compare_fingerprint.py)
