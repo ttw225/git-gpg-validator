@@ -1,10 +1,9 @@
 from typing import List, Tuple
 
-from loguru import logger
 import gnupg
-
+from config import PAYLOAD, SIGN_KEYID, VERIFY_GPGHOME
+from loguru import logger
 from utils import get_github_gpgs
-from config import SIGN_KEYID, VERIFY_GPGHOME, PAYLOAD
 
 
 def sign_text(gpg: gnupg.GPG, text: str, key_id: str) -> bytes:
