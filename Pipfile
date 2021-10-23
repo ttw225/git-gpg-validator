@@ -10,6 +10,7 @@ black = "==21.9b0"
 flake8 = "==4.0.1"
 isort = "==5.9.3"
 bandit = "==1.7.0"
+types-requests = "==2.25.11"
 
 [packages]
 requests = "==2.26.0"

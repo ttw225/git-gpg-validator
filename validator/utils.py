@@ -46,7 +46,7 @@ def get_project_sign() -> Optional[str]:
     """
     logger.info("[Git Config] Getting user signingkey settings")
     try:
-        return git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey")
+        return str(git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey"))
     except Exception as err:
         logger.warning(f"[Git Config] user signingkey error: {err}")
         return None
