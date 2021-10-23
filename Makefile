@@ -9,6 +9,11 @@ init: clean
 dev: init
 	pipenv install --dev
 
+run:
+	pipenv run python3 ${PKG}/app.py
+
+lint: flake8 pylint mypy
+
 flake8:
 	pipenv run flake8
 
@@ -18,20 +23,20 @@ pylint:
 mypy:
 	pipenv run mypy $(PKG)/
 
-lint: flake8 pylint
-
-black:
-	pipenv run black $(PKG) --skip-string-normalization -l 120
+reformat: isort black
 
 isort:
 	pipenv run isort .
 
-reformat: isort black
+black:
+	pipenv run black $(PKG) --skip-string-normalization -l 120
 
-run:
-	pipenv run python3 ${PKG}/app.py
+analysis: bandit
 
-ci-bundle: reformat lint
+bandit:
+	pipenv run bandit -r ${PKG}/
+
+ci-bundle: reformat lint analysis
 
 clean: clean-build clean-pyc
 
