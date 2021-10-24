@@ -1,6 +1,8 @@
 # Git GPG Validator
 Verify that the GPG key is valid on the GitHub account
 
+[![Ochrona](https://img.shields.io/badge/secured_by-ochrona-blue)](https://ochrona.dev)
+
 ## Before Starting
 
 We can use a [GPG Key](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key) to verify the editor of the commit.
