@@ -1,8 +1,7 @@
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
 
-from loguru import logger
 import gnupg
-
+from loguru import logger
 from utils import get_github_gpgs, get_project_sign
 
 

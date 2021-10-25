@@ -1,13 +1,12 @@
 import argparse
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 
-from loguru import logger
 import gnupg
-
-from config import VERIFY_GPGHOME, PAYLOAD
-from utils import get_github_gpgs, get_project_sign
 from compare_fingerprint import compare_key
+from config import PAYLOAD, VERIFY_GPGHOME
+from loguru import logger
 from sign_verify import sign_text, verify_signature
+from utils import get_github_gpgs, get_project_sign
 
 
 def main(args: argparse.Namespace) -> bool:

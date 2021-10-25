@@ -130,3 +130,6 @@ dmypy.json
 
 # GPG Key Folder
 .gpg_folder/
+
+# ochrona cache file
+db_cache.sqlite

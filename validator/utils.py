@@ -1,11 +1,10 @@
 import os
-from typing import List, Tuple, Optional
+from typing import List, Optional, Tuple
 
-import requests
-from loguru import logger
 import git
-
+import requests
 from config import GITHUB_GPG_URI, GITHUB_HEADERS
+from loguru import logger
 
 
 def get_github_gpgs() -> List[Tuple[str, str]]:
@@ -47,7 +46,7 @@ def get_project_sign() -> Optional[str]:
     """
     logger.info("[Git Config] Getting user signingkey settings")
     try:
-        return git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey")
+        return str(git.Repo(os.getcwd()).config_reader().get_value("user", "signingkey"))
     except Exception as err:
         logger.warning(f"[Git Config] user signingkey error: {err}")
         return None
