@@ -53,7 +53,7 @@ git log --show-signature
 ### Prerequisites
 
 - python 3.7
-- pipenv 2018.11.26
+- pipenv 2021.5.29
 
 ### Running
 
