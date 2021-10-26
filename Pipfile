@@ -12,6 +12,9 @@ isort = "==5.9.3"
 bandit = "==1.7.0"
 types-requests = "==2.25.11"
 ochrona = "==1.1.0"
+pytest = "==6.2.5"
+pytest-cov = "==3.0.0"
+pytest-mock = "==3.6.1"
 
 [packages]
 requests = "==2.26.0"
