@@ -52,7 +52,7 @@ ochrona:
 test:
 	pipenv run pytest -vv --cov-report=term-missing --cov=${PKG} /tests
 
-ci-bundle: reformat lint analysis
+ci-bundle: reformat lint analysis test
 
 clean: clean-build clean-pyc
 
