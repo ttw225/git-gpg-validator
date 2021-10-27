@@ -49,6 +49,9 @@ ochrona:
 	@echo [Analysis] Software Composition Analysis
 	pipenv run ochrona
 
+test:
+	pipenv run pytest -vv --cov-report=term-missing --cov=${PKG} /tests
+
 ci-bundle: reformat lint analysis
 
 clean: clean-build clean-pyc
