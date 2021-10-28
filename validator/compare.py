@@ -2,7 +2,8 @@ from typing import List, Optional, Tuple
 
 import gnupg
 from loguru import logger
-from utils import get_github_gpgs, get_project_sign
+
+from .utils import get_github_gpgs, get_project_sign
 
 
 def compare_key(local_key: str, platform_keys: List[Tuple[str, str]]) -> bool:

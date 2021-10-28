@@ -3,8 +3,9 @@ from typing import List, Optional, Tuple
 
 import git
 import requests
-from config import GITHUB_GPG_URI, GITHUB_HEADERS
 from loguru import logger
+
+from .config import GITHUB_GPG_URI, GITHUB_HEADERS
 
 
 def get_github_gpgs() -> List[Tuple[str, str]]:

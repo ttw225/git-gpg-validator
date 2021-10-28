@@ -13,7 +13,7 @@ dev: init
 
 run:
 	@echo Run Project
-	pipenv run python3 ${PKG}/app.py
+	pipenv run python3 -m ${PKG}.app
 
 lint: flake8 pylint mypy
 
