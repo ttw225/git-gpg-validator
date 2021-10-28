@@ -105,7 +105,7 @@ python3 validator/app.py -m hard
 python3 validator/app.py -m hard -k "KEY_ID"
 ```
 
-### [Simple Fingerprint Compare](./compare_fingerprint.py)
+### [Simple Fingerprint Compare](./compare.py)
 
 Applicable to the situation where the same key is used for encryption and decryption.
 
