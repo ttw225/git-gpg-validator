@@ -62,14 +62,21 @@ git log --show-signature
 pipenv install
 ```
 
-2. Validate
+2. Update Environments
 ```sh
-pipenv run python3 validator/app.py
+cp .env.sample .env
+```
+
+Note: Make sure sign GPG home direction path is correct, default `GNUPGHOME` is set as `~.gnupg`.
+
+3. Validate
+```sh
+pipenv run python3 -m validator.app
 ```
 
 Help
 ```sh
-pipenv run python3 validator/app.py --help
+pipenv run python3 -m validator.app --help
 ```
 ```sh
 usage: app.py [-h] [-m {simple,hard}] [-k KEY]
@@ -90,19 +97,16 @@ pipenv shell
 
 # Simple Verify
 ## Use project default key, and compare fingerprint only
-python3 validator/app.py
+python3 -m validator.app
 
 ## Use specific key, and compare fingerprint only
-python3 validator/app.py -k "KEY_ID"
-
-# Hard Verify
-mkdir .gpg_folder
+python3 -m validator.app -k "KEY_ID"
 
 ## Use project default key, and do a sign-verify check
-python3 validator/app.py -m hard
+python3 -m validator.app -m hard
 
 ## Use specific key, and a sign-verify check
-python3 validator/app.py -m hard -k "KEY_ID"
+python3 -m validator.app -m hard -k "KEY_ID"
 ```
 
 ### [Simple Fingerprint Compare](./compare.py)
@@ -121,5 +125,5 @@ Verification flow:
 
 1. Sign text: use project default key or specific key to sign text
 2. Import platform GPG keys
-    The `verify_signature` function will import platform's key into temporary GPG folder (default is `.gpg_folder`).
+    The `verify_signature` function will import platform's key into temporary GPG folder (default is `.gpg_verify`).
 3. Use temporary GPG object to verify the signature from step 1.
