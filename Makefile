@@ -6,6 +6,8 @@ init: clean
 	@echo Install Environment
 	pipenv --python 3.7
 	pipenv install
+	mkdir -p .gpg_sign
+	mkdir -p .gpg_verify
 
 dev: init
 	@echo Install Develop Environment
@@ -54,7 +56,7 @@ test:
 
 ci-bundle: reformat lint analysis test
 
-clean: clean-build clean-pyc
+clean: clean-build clean-pyc clean-test clean-gpg
 
 clean-build:
 	rm -fr build/
@@ -68,3 +70,11 @@ clean-pyc:
 	find . -type f -name '*.pyo' -delete
 	find . -type f -name '*~' -delete
 	find . -type d -name '__pycache__' -delete
+
+clean-test:
+	rm -rf .pytest_cache
+	rm -f .coverage
+
+clean-gpg:
+	rm -rf .gpg_sign/*
+	rm -rf .gpg_verify/*

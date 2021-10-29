@@ -129,7 +129,8 @@ dmypy.json
 .pyre/
 
 # GPG Key Folder
-.gpg_folder/
+.gpg_sign/
+.gpg_verify/
 
 # ochrona cache file
 db_cache.sqlite

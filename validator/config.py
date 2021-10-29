@@ -1,15 +1,22 @@
 import os
+from typing import Dict
 
+import gnupg
 from dotenv import load_dotenv
 
 load_dotenv()
 
-# Sign and Verify
-SIGN_KEYID = os.environ.get("SIGN_KEYID", "")
-VERIFY_GPGHOME = os.environ.get("VERIFY_GPGHOME", ".gpg_folder")
-PAYLOAD = "Try a little harder to be a little better"
+# GPG Setting
+SIGN_KEYID: str = os.environ.get("SIGN_KEYID", "")
+PAYLOAD: str = "Try a little harder to be a little better"
+SIGN_GPGHOME: str = os.environ.get("SIGN_GPGHOME", ".gpg_sign")
+VERIFY_GPGHOME: str = os.environ.get("VERIFY_GPGHOME", ".gpg_verify")
 
-# Compare Fingerprint
-GITHUB_USERNAME = os.environ.get("GITHUB_USERNAME", "")
-GITHUB_GPG_URI = f"https://api.github.com/users/{GITHUB_USERNAME}/gpg_keys"
-GITHUB_HEADERS = {"Accept": "application/vnd.github.v3+json"}
+# GPG Object
+GPG_SIGN: gnupg.GPG = gnupg.GPG(gnupghome=SIGN_GPGHOME)
+GPG_VERIFY: gnupg.GPG = gnupg.GPG(gnupghome=VERIFY_GPGHOME)
+
+# Git Platform
+GITHUB_USERNAME: str = os.environ.get("GITHUB_USERNAME", "")
+GITHUB_GPG_URI: str = f"https://api.github.com/users/{GITHUB_USERNAME}/gpg_keys"
+GITHUB_HEADERS: Dict[str, str] = {"Accept": "application/vnd.github.v3+json"}
