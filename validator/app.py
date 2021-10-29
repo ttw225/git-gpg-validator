@@ -1,11 +1,10 @@
 import argparse
 from typing import List, Optional, Tuple
 
-import gnupg
 from loguru import logger
 
 from .compare import compare_key
-from .config import PAYLOAD, VERIFY_GPGHOME
+from .config import GPG_SIGN, GPG_VERIFY, PAYLOAD
 from .sign_verify import sign_text, verify_signature
 from .utils import get_github_gpgs, get_project_sign
 
@@ -35,9 +34,8 @@ def main(args: argparse.Namespace) -> bool:
         else:
             raise Exception("No Local GPG Key Setting")
     # Check Key Available
-    default_gpg: gnupg.GPG = gnupg.GPG()
     logger.debug(f"[Project Key ID] {project_key_id}")
-    pub_key: str = default_gpg.export_keys(project_key_id)
+    pub_key: str = GPG_SIGN.export_keys(project_key_id)
     if not project_key_id or not pub_key:
         raise Exception("No Local GPG Key")
     # Platform GPG Key(s)
@@ -53,10 +51,9 @@ def main(args: argparse.Namespace) -> bool:
         logger.error("[GPG Simple] Verification Failed")
     else:
         # Sign text
-        text_signature: bytes = sign_text(default_gpg, PAYLOAD, project_key_id)
+        text_signature: bytes = sign_text(GPG_SIGN, PAYLOAD, project_key_id)
         # Verify signature
-        verify_gpg: gnupg.GPG = gnupg.GPG(gnupghome=VERIFY_GPGHOME)
-        if verify_signature(verify_gpg, text_signature, platform_key_pairs):
+        if verify_signature(GPG_VERIFY, text_signature, platform_key_pairs):
             logger.success("[GPG Hard] Verified Successfully")
             return True
         logger.error("[GPG Hard] Verification Failed")

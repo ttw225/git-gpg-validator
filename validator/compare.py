@@ -1,8 +1,8 @@
 from typing import List, Optional, Tuple
 
-import gnupg
 from loguru import logger
 
+from .config import GPG_SIGN
 from .utils import get_github_gpgs, get_project_sign
 
 
@@ -16,11 +16,10 @@ def compare_key(local_key: str, platform_keys: List[Tuple[str, str]]) -> bool:
     Returns:
         bool: Local key valid or not
     """
-    gpg = gnupg.GPG()
-    local_fingerprint: str = gpg.import_keys(gpg.export_keys(local_key)).fingerprints[0]
+    local_fingerprint: str = GPG_SIGN.import_keys(GPG_SIGN.export_keys(local_key)).fingerprints[0]
     logger.debug(f"[Local Fingerprint] {local_fingerprint}")
     for keyid, pubkey in platform_keys:
-        if local_fingerprint == gpg.import_keys(pubkey).fingerprints[0]:
+        if local_fingerprint == GPG_SIGN.import_keys(pubkey).fingerprints[0]:
             logger.debug(f"[Key Valid] ID: {keyid}")
             return True
     return False

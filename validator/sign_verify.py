@@ -3,7 +3,7 @@ from typing import List, Tuple
 import gnupg
 from loguru import logger
 
-from .config import PAYLOAD, SIGN_KEYID, VERIFY_GPGHOME
+from .config import GPG_SIGN, GPG_VERIFY, PAYLOAD, SIGN_KEYID
 from .utils import get_github_gpgs
 
 
@@ -41,12 +41,10 @@ def verify_signature(gpg: gnupg.GPG, signature: bytes, key_pairs: List[Tuple[str
 
 if __name__ == "__main__":
     # Use the Key with the specified ID for signing
-    default_gpg: gnupg.GPG = gnupg.GPG()
-    text_signature: bytes = sign_text(default_gpg, PAYLOAD, SIGN_KEYID)
+    text_signature: bytes = sign_text(GPG_SIGN, PAYLOAD, SIGN_KEYID)
     # Verify signature
     platform_key_pairs: List[Tuple[str, str]] = get_github_gpgs()
-    verify_gpg: gnupg.GPG = gnupg.GPG(gnupghome=VERIFY_GPGHOME)
-    if verify_signature(verify_gpg, text_signature, platform_key_pairs):
+    if verify_signature(GPG_VERIFY, text_signature, platform_key_pairs):
         logger.success("[GPG Sign] Verified Successfully")
     else:
         logger.error("[GPG Sign] Verification Failed")
