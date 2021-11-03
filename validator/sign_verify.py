@@ -7,7 +7,7 @@ from .config import GPG_SIGN, GPG_VERIFY, PAYLOAD, SIGN_KEYID
 from .utils import get_github_gpgs
 
 
-def sign_text(gpg: gnupg.GPG, text: str, key_id: str, passphrase: str = "") -> bytes:
+def sign_text(gpg: gnupg.GPG, text: str, key_id: str, passphrase: str = str()) -> bytes:
     """Sign text
 
     Args:
