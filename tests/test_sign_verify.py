@@ -37,9 +37,7 @@ def import_keys(request):
     indirect=["import_keys"],
 )
 def test_sign_text(import_keys, sign_key, success):
-    print(GPG_SIGN.list_keys())
-    print(sign_key["fingerprint"])
-    signature = sign_text(GPG_SIGN, "TEST STRING", sign_key["fingerprint"], sign_key["passphrase"])
+    signature = sign_text(GPG_SIGN, "TEST STRING", sign_key["id"], sign_key["passphrase"])
     message = GPG_SIGN.verify(signature)
     if success:
         assert message.valid is True
