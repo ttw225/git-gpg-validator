@@ -12,10 +12,10 @@ from .config import TEST_KEYS
 def import_keys(request):
     sign_key, verify_key = request.param
     if sign_key:
-        with open(f"tests/sample_keys/{sign_key['file']}", "rb") as key_fh:
+        with open(f"tests/sample_keys/{sign_key['secret']}", "rb") as key_fh:
             GPG_SIGN.import_keys(key_fh.read())
     if verify_key:
-        with open(f"tests/sample_keys/{verify_key['file']}", "rb") as key_fh:
+        with open(f"tests/sample_keys/{verify_key['secret']}", "rb") as key_fh:
             GPG_VERIFY.import_keys(key_fh.read())
     yield
     if sign_key:

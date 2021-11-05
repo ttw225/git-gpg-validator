@@ -13,7 +13,7 @@ from .config import TEST_KEYS
 @pytest.fixture
 def import_sign_keys(key_files=TEST_KEYS):
     for key_file in key_files:
-        with open(f"tests/sample_keys/{key_file['file']}", "rb") as key_fh:
+        with open(f"tests/sample_keys/{key_file['secret']}", "rb") as key_fh:
             GPG_SIGN.import_keys(key_fh.read())
     yield
     for key_file in key_files:
