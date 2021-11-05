@@ -7,23 +7,19 @@ from .config import GPG_SIGN, GPG_VERIFY, PAYLOAD, SIGN_KEYID
 from .utils import get_github_gpgs
 
 
-def sign_text(gpg: gnupg.GPG, text: str, key_id: str, passphrase: str = str()) -> bytes:
+def sign_text(gpg: gnupg.GPG, text: str, key_id: str) -> bytes:
     """Sign text
 
     Args:
         gpg (gnupg.GPG): GPG for sign
         text (str): target text
         key_id (str): sign key id
-        passphrase (str, optional): passphrase of the key. Defaults to "".
 
     Returns:
         bytes: signature
     """
     # use `-u` to specific the sign key, without using default key-ring
-    if passphrase:
-        signed = gpg.sign(text, keyid=key_id, passphrase=passphrase, extra_args=["-u", key_id])
-    else:
-        signed = gpg.sign(text, keyid=key_id, extra_args=["-u", key_id])
+    signed = gpg.sign(text, keyid=key_id, extra_args=["-u", key_id])
     return signed.data
 
 

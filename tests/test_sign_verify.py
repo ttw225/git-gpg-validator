@@ -13,7 +13,7 @@ def import_keys(request):
     sign_key, verify_key = request.param
     if sign_key:
         with open(f"tests/sample_keys/{sign_key['secret']}", "rb") as key_fh:
-            GPG_SIGN.import_keys(key_fh.read())
+            GPG_SIGN.import_keys(key_fh.read(), passphrase=sign_key["passphrase"])
     if verify_key:
         with open(f"tests/sample_keys/{verify_key['public']}", "rb") as key_fh:
             GPG_VERIFY.import_keys(key_fh.read())
@@ -22,8 +22,7 @@ def import_keys(request):
         GPG_SIGN.delete_keys(sign_key["fingerprint"], secret=True, passphrase=sign_key["passphrase"])
         GPG_SIGN.delete_keys(sign_key["fingerprint"], secret=False, passphrase=sign_key["passphrase"])
     if verify_key:
-        GPG_VERIFY.delete_keys(verify_key["fingerprint"], secret=True, passphrase=verify_key["passphrase"])
-        GPG_VERIFY.delete_keys(verify_key["fingerprint"], secret=False, passphrase=verify_key["passphrase"])
+        GPG_VERIFY.delete_keys(verify_key["fingerprint"], secret=False)
 
 
 @pytest.mark.parametrize(
@@ -37,7 +36,7 @@ def import_keys(request):
     indirect=["import_keys"],
 )
 def test_sign_text(import_keys, sign_key, success):
-    signature = sign_text(GPG_SIGN, "TEST STRING", sign_key["id"], sign_key["passphrase"])
+    signature = sign_text(GPG_SIGN, "TEST STRING", sign_key["id"])
     message = GPG_SIGN.verify(signature)
     if success:
         assert message.valid is True
@@ -58,7 +57,7 @@ def test_sign_text(import_keys, sign_key, success):
     indirect=["import_keys"],
 )
 def test_verify_signature(import_keys, sign_key, verify_key):
-    signature = sign_text(GPG_SIGN, "TEST STRING", sign_key["id"], sign_key["passphrase"])
+    signature = sign_text(GPG_SIGN, "TEST STRING", sign_key["id"])
     key_pairs = [(verify_key["id"], open(f"tests/sample_keys/{verify_key['public']}", "rb").read())]
     if sign_key == verify_key:
         assert verify_signature(GPG_VERIFY, signature, key_pairs) is True
