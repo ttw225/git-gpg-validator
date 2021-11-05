@@ -5,20 +5,9 @@ import git
 import pytest
 
 from validator.config import GPG_SIGN
-from validator.utils import get_project_sign
+from validator.utils import get_project_sign, parse_github_response
 
 from .config import TEST_KEYS
-
-
-@pytest.fixture
-def import_sign_keys(key_files=TEST_KEYS):
-    for key_file in key_files:
-        with open(f"tests/sample_keys/{key_file['secret']}", "rb") as key_fh:
-            GPG_SIGN.import_keys(key_fh.read())
-    yield
-    for key_file in key_files:
-        GPG_SIGN.delete_keys(key_file["fingerprint"], secret=True, passphrase=key_file["passphrase"])
-        GPG_SIGN.delete_keys(key_file["fingerprint"], secret=False, passphrase=key_file["passphrase"])
 
 
 @pytest.fixture
@@ -37,5 +26,56 @@ def test_get_project_sign(backup_git_key, key_id: str):
     assert get_project_sign() == key_id
 
 
-def test_import_sign(import_sign_keys):
-    assert len(GPG_SIGN.list_keys()) == len(TEST_KEYS)
+@pytest.mark.parametrize(
+    "response, output",
+    [
+        ([], []),
+        (
+            [
+                {
+                    "key_id": "KEY-ID-OK",
+                    "raw_key": "RAW-KEY-OK",
+                    "can_certify": True,
+                }
+            ],
+            [("KEY-ID-OK", "RAW-KEY-OK")],
+        ),
+        (
+            [
+                {
+                    "key_id": "KEY-ID-OK",
+                    "raw_key": "RAW-KEY-OK",
+                    "can_certify": True,
+                },
+                {
+                    "key_id": "KEY-ID-BAD",
+                    "raw_key": "RAW-KEY-BAD",
+                    "can_certify": False,
+                },
+            ],
+            [("KEY-ID-OK", "RAW-KEY-OK")],
+        ),
+        (
+            [
+                {
+                    "key_id": "KEY-ID-OK",
+                    "raw_key": "RAW-KEY-OK",
+                    "can_certify": True,
+                },
+                {
+                    "key_id": "KEY-ID-OK1",
+                    "raw_key": "RAW-KEY-OK1",
+                    "can_certify": True,
+                },
+                {
+                    "key_id": "KEY-ID-BAD",
+                    "raw_key": "RAW-KEY-BAD",
+                    "can_certify": False,
+                },
+            ],
+            [("KEY-ID-OK", "RAW-KEY-OK"), ("KEY-ID-OK1", "RAW-KEY-OK1")],
+        ),
+    ],
+)
+def test_parse_github_response(response, output):
+    assert parse_github_response(response) == output

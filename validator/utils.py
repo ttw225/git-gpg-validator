@@ -33,7 +33,7 @@ def parse_github_response(response: list) -> List[Tuple[str, str]]:
     """
     gpg_keys: List[Tuple[str, str]] = []
     for keys in response:
-        if keys["can_sign"] and keys["can_certify"]:
+        if keys["can_certify"]:
             logger.info(f"[GitHub GPG] ID: {keys['key_id']}")
             gpg_keys.append((keys["key_id"], keys["raw_key"]))
     return gpg_keys
