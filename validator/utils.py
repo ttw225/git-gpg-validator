@@ -18,6 +18,7 @@ def get_github_gpgs() -> List[Tuple[str, str]]:
         response: list = requests.get(GITHUB_GPG_URI, headers=GITHUB_HEADERS).json()
     except Exception as err:
         logger.error(err)
+        response = []
     key_ids = parse_github_response(response)
     return key_ids
 
