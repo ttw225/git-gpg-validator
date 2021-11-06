@@ -92,3 +92,18 @@ def test_parse_github_response(response, output):
 def test_get_github_gpgs(requests_mock, response, output):
     requests_mock.get(GITHUB_GPG_URI, request_headers=GITHUB_HEADERS, json=response)
     assert get_github_gpgs() == output
+
+
+@pytest.mark.parametrize(
+    "exception",
+    [
+        requests.exceptions.Timeout,
+        requests.exceptions.ConnectionError,
+        requests.exceptions.MissingSchema,
+        ConnectionRefusedError,
+        Exception,
+    ],
+)
+def test_get_github_gpgs_failed(requests_mock, exception):
+    requests_mock.get(GITHUB_GPG_URI, exc=exception)
+    assert get_github_gpgs() == []
